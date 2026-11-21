@@ -225,10 +225,19 @@
   .signal .lede { font: 300 clamp(22px, 2.4vw, 32px)/1.9 var(--serif); letter-spacing: 0.08em; color: var(--bone); }
   .signal .lede span { display: block; font-size: 15px; line-height: 2; letter-spacing: 0.06em; color: var(--dim); margin-top: 10px; }
   .signal form { position: relative; margin-top: 7vh; }
-  .signal input { display: block; width: 100%; font: 300 clamp(18px, 1.7vw, 22px)/1.8 var(--serif); letter-spacing: 0.05em; color: var(--bone);
+  .signal input, .signal textarea { display: block; width: 100%; font: 300 clamp(18px, 1.7vw, 22px)/1.8 var(--serif); letter-spacing: 0.05em; color: var(--bone);
                   background: none; border: 0; border-radius: 0; caret-color: var(--bone); padding: 10px 0 14px; }
-  .signal input::placeholder { color: rgba(232,230,223,0.26); }
-  .signal input:focus { outline: none; }
+  .signal input::placeholder, .signal textarea::placeholder { color: rgba(232,230,223,0.38); }
+  .signal input:focus, .signal textarea:focus { outline: none; }
+  .signal .compose { position: relative; }
+  .signal textarea { resize: vertical; min-height: 100px; max-height: 45vh; padding-right: 64px; }
+  .signal .contact-details { margin-top: 20px; color: var(--dim); font-size: 14px; line-height: 1.8; }
+  .signal .contact-details summary { cursor: pointer; width: fit-content; }
+  .signal .contact-details input { font-size: 16px; border-bottom: 1px solid rgba(232,230,223,.14); margin-top: 8px; }
+  .signal .send:disabled { cursor: wait; opacity: .6; }
+  .signal .out[data-error="true"] { color: #deb0a3; }
+  .signal .privacy-note { margin-top: 16px; font-size: 14px; color: var(--dim); line-height: 1.8; }
+  .signal .trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .signal .rule { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(232,230,223,0.14); overflow: hidden; }
   .signal .rule::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(232,230,223,0), var(--bone) 50%, rgba(232,230,223,0));
                          transform: scaleX(0); transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
@@ -364,16 +373,25 @@
       <p data-lit>我爱吃麦当劳<small>尤其是薯条，放凉了更好吃</small></p>
     </div>
   </section>
-  <!-- 联系：回到终端。输入一句话，按 Enter 把它发往星空（不会真的发送） -->
+  <!-- 联系：保存到私有收件箱后，再让这封信飞进星空。 -->
   <section id="signal" aria-labelledby="h-signal">
     <div class="hd"><h2 id="h-signal">联系</h2><p>合作、提问，或者只是打个招呼。</p></div>
     <div class="signal">
       <p class="lede">写点什么东西给我。</p>
-      <form id="sigForm" autocomplete="off">
-        <label class="sr" for="sigIn">你的信息</label>
-        <input id="sigIn" maxlength="140" placeholder="比如：你好，我也在看这片星空" enterkeyhint="send">
-        <button class="send" type="submit">发送</button><i class="rule" aria-hidden="true"></i>
+      <form id="sigForm">
+        <div class="compose">
+          <label class="sr" for="sigIn">你的留言</label>
+          <textarea id="sigIn" name="message" maxlength="4000" rows="2" required placeholder="比如：你好，我也在看这片星空"></textarea>
+          <button class="send" type="submit">发送</button><i class="rule" aria-hidden="true"></i>
+        </div>
+        <details class="contact-details">
+          <summary>留下联系方式（选填）</summary>
+          <label class="sr" for="sigContact">邮箱或其他联系方式</label>
+          <input id="sigContact" name="contact" maxlength="200" autocomplete="email" placeholder="邮箱或其他联系方式，方便我回复你">
+        </details>
+        <div class="trap" aria-hidden="true"><label for="sigWebsite">Website</label><input id="sigWebsite" name="website" tabindex="-1" autocomplete="off"></div>
       </form>
+      <p class="privacy-note">留言只会进入我的私人收件箱，不会公开展示。</p>
       <p class="out" id="sigOut" aria-live="polite"></p>
     </div>
     <nav class="links" aria-label="其他联系方式">
@@ -393,7 +411,9 @@
 <button class="skip show" id="skip" type="button">跳过开场</button>
 <nav class="bar" id="bar" aria-label="控制">
   <button id="replay">R 重播开场</button>
+  <button id="sound-toggle" type="button" aria-pressed="true">键盘声：开</button>
 </nav>
+<script src="intro-audio.js"></script>
 <script>
 "use strict";
 /* ========== 基础 ========== */
@@ -451,9 +471,11 @@ function typeStep(now) {
   const full = lineText(typingCurrent);
   typed = full.slice(0, typed.length + 1);
   lines[lines.length - 1] = typed;
+  if (typed.slice(-1).trim()) window.RayAudio.key();
   if (typed.length >= full.length) {
     lines[lines.length - 1] = typingCurrent;       // @stamp 之后继续实时走秒
     typingCurrent = null; nextKey = now + 420;
+    window.RayAudio.key(true);
   } else {
     nextKey = now + 24 + Math.random() * 38;
   }
@@ -1159,11 +1181,13 @@ let answer = "", askBase = "";                     // prompt 阶段：answer 是
 function startAsk() { askBase = lines[lines.length - 1]; answer = ""; }   // 记下提示行原文（含 [Y/n]）
 function typeChar(ch) {                             // 像终端一样把一个字符敲到提示行末尾
   if (state !== "prompt") return;
+  window.RayAudio.key();
   if (!askBase) askBase = lines[lines.length - 1];
   answer += ch; lines[lines.length - 1] = askBase + answer; requestFrame();
 }
 function backspace() {
   if (state !== "prompt" || !answer) return;
+  window.RayAudio.key();
   answer = answer.slice(0, -1); lines[lines.length - 1] = askBase + answer; requestFrame();
 }
 function submitAnswer() {                           // 按 Enter：读当前这行敲进去的内容
@@ -1174,6 +1198,7 @@ function submitAnswer() {                           // 按 Enter：读当前这�
 }
 function go() {
   if (state !== "prompt") return;
+  window.RayAudio.key(true);
   answer = ""; askBase = "";
   if (!REDUCED) sampleText();
   dust = []; lastF = 0;
@@ -1195,6 +1220,7 @@ function refuse() {
   requestFrame();
 }
 function reset() {                                 // 完全回到刚打开页面的样子：重新从头打字
+  window.RayAudio.unlock();
   closeScroll();
   // 把所有过场状态清零
   SC = 0; DAWN = 0; lensE = 0; glowK = 0; dust = []; shots = []; lastF = 0; meteor = null; nextMeteor = 0;
@@ -1357,16 +1383,12 @@ copyEmail.addEventListener("click", async () => {
 /* 联系：发出去的话变成一颗光点飞向天空，最后留在星空里，往回滚也还在 */
 let shots = [];
 const sigIn = $("#sigIn"), sigOut = $("#sigOut");
-$("#sigForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const msg = sigIn.value.trim();
-  if (!msg) { sigOut.textContent = "先写下一句话，再发送。"; sigIn.focus(); return; }
+$("#sigForm").addEventListener("ray:message-sent", e => {
+  const msg = e.detail.message;
   const r = sigIn.getBoundingClientRect();
   ctx.font = getComputedStyle(sigIn).font;
   const sx = Math.min(r.right - 60, r.left + ctx.measureText(msg).width), sy = r.top + r.height * 0.45;
   shots.push({ x0: sx, y0: sy, x1: W * (0.15 + Math.random() * 0.7), y1: H * (0.05 + Math.random() * 0.3), t0: performance.now(), dur: 3000 });
-  sigIn.value = "";
-  sigOut.textContent = `已发送。这 ${[...msg].length} 个字现在是天上的一颗星。（演示版，不会真的寄出）`;
   layoutDirty = true; requestFrame();
 });
 function drawShots(now) {
@@ -1493,5 +1515,6 @@ addEventListener("DOMContentLoaded", () => {
 });
 </script>
 <script src="navigation.js"></script>
+<script src="signal.js"></script>
 </body>
 </html>

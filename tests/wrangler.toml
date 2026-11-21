@@ -1,0 +1,9 @@
+# Local test database only. Production settings live in the repository root.
+name = "tianruili-local-test"
+compatibility_date = "2026-11-21"
+pages_build_output_dir = "../dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tianruili-local-test"
+database_id = "00000000-0000-0000-0000-000000000001"

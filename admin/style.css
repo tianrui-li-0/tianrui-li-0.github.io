@@ -1,0 +1,46 @@
+:root { color-scheme: dark; --paper: #e8e6df; --dim: #a09f99; --line: #30312f; --bg: #0b0d0e; font: 16px/1.7 "Songti SC", "Noto Serif SC", "Microsoft YaHei", serif; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; color: var(--paper); background: radial-gradient(ellipse at 75% 5%, #1c2428 0, transparent 48%), var(--bg); min-height: 100vh; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: wait; opacity: .5; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 1px solid #d5d3c9; outline-offset: 5px; }
+.masthead { padding: 28px 5vw; display: flex; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid #242829; color: var(--dim); font-size: 14px; }
+.brand { font: 14px/1.5 ui-monospace, monospace; letter-spacing: .2em; color: var(--paper); }
+main { width: min(960px, 90vw); margin: 0 auto; padding: 72px 0 100px; }
+h1 { font-size: clamp(30px, 4vw, 48px); font-weight: 400; letter-spacing: .08em; margin: 8px 0 16px; }
+h2 { font-size: 23px; font-weight: 400; }
+.eyebrow { font: 12px/1.5 ui-monospace, monospace; letter-spacing: .2em; color: #969f9e; }
+.muted { color: var(--dim); margin: 0; }
+.auth { max-width: 420px; margin: 6vh auto 14vh; }
+.auth form { margin-top: 40px; }
+label { display: block; margin: 22px 0 8px; font-size: 14px; color: var(--dim); }
+input { width: 100%; border: 1px solid #424644; background: #111516; color: var(--paper); border-radius: 3px; padding: 12px 14px; }
+.primary { width: 100%; border: 1px solid #ddd9cc; background: #e3dfd2; color: #191b1b; padding: 12px; margin-top: 28px; border-radius: 3px; }
+.status { font-size: 14px; color: var(--dim); min-height: 24px; overflow-wrap: anywhere; }
+.status[data-error="true"] { color: #e4b7a7; }
+.heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.quiet { background: transparent; color: var(--dim); border: 1px solid #424644; padding: 8px 16px; border-radius: 3px; font-size: 14px; white-space: nowrap; }
+.quiet:hover { color: var(--paper); border-color: #96988d; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 40px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.toolbar nav { display: flex; gap: 22px; }
+.toolbar nav button { border: 0; padding: 10px 0; background: none; color: var(--dim); font-size: 16px; border-bottom: 1px solid transparent; }
+.toolbar nav button[aria-pressed="true"] { color: var(--paper); border-color: var(--paper); }
+.toolbar span { font: 12px/1 ui-monospace, monospace; margin-left: 4px; }
+.letter { padding: 24px 28px; margin: 18px 0; background: #131718; border: 1px solid #303738; border-radius: 4px; }
+.letter.unread { border-left: 2px solid #c5c6b8; }
+.letter-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: var(--dim); font-size: 14px; }
+.badge { font: 12px/1.6 ui-monospace, monospace; letter-spacing: .08em; color: #d0d5be; }
+.letter-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.9; font-size: 17px; margin: 24px 0; }
+.contact { color: #b6b9b1; font-size: 14px; overflow-wrap: anywhere; padding-top: 16px; border-top: 1px solid #2a3030; }
+.contact b { font-weight: 400; color: var(--dim); margin-right: 12px; }
+.letter-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.empty { text-align: center; padding: 80px 12px; color: var(--dim); }
+.empty h2 { color: var(--paper); }
+.star { font-size: 35px; color: #a7aea8; }
+.more { display: block; margin: 32px auto 0; }
+footer { padding: 28px 5vw; border-top: 1px solid #242829; color: #8b9391; font: 12px/1.8 ui-monospace, monospace; letter-spacing: .1em; }
+footer span { display: block; margin-top: 8px; letter-spacing: .03em; font: 14px/1.8 "Songti SC", serif; }
+@media(max-width: 600px) { main { padding-top: 40px; } .masthead { padding: 22px 5vw; } .toolbar nav { gap: 14px; } .toolbar nav button { font-size: 14px; } .toolbar { align-items: flex-start; } .letter { padding: 20px; } .heading { align-items: flex-start; } .heading .quiet { margin-top: 12px; } .quiet { padding: 7px 12px; } .letter-top { align-items: flex-start; } }

@@ -1,0 +1,12 @@
+name = "tianruili"
+compatibility_date = "2026-11-21"
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tianruili-inbox"
+database_id = "59aee788-4ce8-4aec-bc84-218b980fc704"
+
+# Preview deployments never read visitors' production messages.
+[env.preview]
+d1_databases = []

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>私人收件箱 · RAY</title>
+  <link rel="stylesheet" href="/admin/style.css">
+  <script src="/admin/inbox.js" defer></script>
+</head>
+<body>
+  <header class="masthead"><a href="/site#signal" class="brand">RAY / INBOX</a><a href="/site">回到网站</a></header>
+  <main>
+    <section id="auth" class="auth">
+      <p class="eyebrow">LETTERS FROM EARTH</p>
+      <h1 id="authTitle">私人收件箱</h1>
+      <p id="authDescription" class="muted">这里放着访客写给你的话。</p>
+      <form id="authForm" hidden>
+        <label for="password">管理密码</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required maxlength="200">
+        <div id="confirmRow" hidden><label for="confirmPassword">再输入一次</label><input id="confirmPassword" type="password" autocomplete="new-password" maxlength="200"></div>
+        <button class="primary" id="authSubmit" type="submit">进入收件箱</button>
+      </form>
+      <p id="authStatus" class="status" role="status">正在连接收件箱…</p>
+      <noscript>请开启 JavaScript 后登录收件箱。</noscript>
+    </section>
+    <section id="inbox" hidden>
+      <div class="heading"><div><p class="eyebrow">LETTERS FROM EARTH</p><h1>收到的来信</h1><p id="summary" class="muted"></p></div><button id="logout" class="quiet" type="button">退出登录</button></div>
+      <div class="toolbar"><nav aria-label="留言分类" id="filters"><button type="button" data-filter="inbox" aria-pressed="true">收件箱 <span id="countInbox">0</span></button><button type="button" data-filter="unread" aria-pressed="false">未读 <span id="countUnread">0</span></button><button type="button" data-filter="archived" aria-pressed="false">已归档 <span id="countArchived">0</span></button></nav><button id="refresh" class="quiet" type="button">刷新</button></div>
+      <p id="inboxStatus" class="status" role="status"></p>
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <div id="empty" class="empty" hidden><span class="star" aria-hidden="true">✦</span><h2 id="emptyTitle">星空很安静。</h2><p id="emptyText">有人从网站发来留言，就会出现在这里。</p></div>
+      <button id="more" class="quiet more" type="button" hidden>查看更早的来信</button>
+    </section>
+  </main>
+  <footer>ONLY FOR YOU <span>留言不会在网站上公开。</span></footer>
+</body>
+</html>
