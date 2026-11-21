@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>作品 · Ray</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #e8e6df;
+    --soft: #b8b4aa;
+    --accent: #c8b89b;
+    --rule: rgba(232,230,223,.17);
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", SimSun, serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; color: var(--ink); font: 400 1rem/1.95 var(--serif); background: radial-gradient(ellipse at 85% 0, #18191c, #09090b 46rem); }
+  main { max-width: 74rem; margin: auto; padding: 1.75rem clamp(1.2rem, 5vw, 4rem) 4rem; }
+  nav { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--rule); font-size: .875rem; letter-spacing: .12em; }
+  nav span { color: var(--soft); }
+  a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: .35em; }
+  a:hover { text-decoration-color: currentColor; }
+  :focus-visible { outline: 1px solid var(--accent); outline-offset: .3rem; }
+  header { padding: clamp(2.4rem, 7vw, 5.2rem) 0 clamp(1.35rem, 4vw, 2.6rem); }
+  h1 { margin: 0; font: 400 clamp(1.85rem, 5.3vw, 3.4rem)/1.4 var(--serif); letter-spacing: .05em; text-wrap: balance; }
+  .project-grid { display: grid; grid-template-columns: minmax(0,1.8fr) minmax(15rem,1fr); align-items: start; gap: clamp(1.75rem, 5vw, 4.1rem); }
+  figure { margin: 0; min-width: 0; }
+  .screen { background: #000; border: 1px solid var(--rule); }
+  video { display: block; width: 100%; aspect-ratio: 16 / 9; max-height: 69svh; object-fit: contain; }
+  figure.portrait video { width: min(100%, 38svh, 24rem); aspect-ratio: 9 / 16; margin-inline: auto; }
+  figcaption { margin: .8rem 0 0; color: var(--soft); font-size: .875rem; letter-spacing: .05em; font-variant-numeric: tabular-nums; }
+  .intro { padding-top: .65rem; border-top: 1px solid var(--rule); }
+  h2 { margin: 0 0 .7rem; font: 400 1.25rem/1.65 var(--serif); letter-spacing: .08em; }
+  .intro p { margin: 0; color: var(--soft); line-height: 1.95; }
+  .intro a { display: inline-block; margin-top: 1.05rem; font-size: .9375rem; color: var(--accent); }
+  .intro a[hidden] { display: none; }
+  #media-error { margin: .8rem 0 0; color: var(--accent); }
+  #missing { margin-top: 3rem; }
+  @media (max-width: 760px) {
+    .project-grid { grid-template-columns: minmax(0,1fr); }
+    .intro { padding-top: 1rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <nav aria-label="作品导航"><a href="../site.html#works" data-return>返回</a><span>RAY / 作品</span></nav>
+  <article id="work" hidden>
+    <header>
+      <h1 id="work-title"></h1>
+    </header>
+    <div class="project-grid">
+      <figure id="work-figure">
+        <div class="screen">
+          <video id="work-video" controls playsinline preload="metadata">你的浏览器不支持在网页中播放视频。</video>
+        </div>
+        <figcaption id="work-caption"></figcaption>
+        <p id="media-error" role="status" hidden>视频无法加载，请确认视频文件与网页保留在同一个作品文件夹内。</p>
+      </figure>
+      <section class="intro" aria-labelledby="intro-heading">
+        <h2 id="intro-heading">作品简介</h2>
+        <p id="work-intro"></p>
+        <a id="work-note" href="../blog/desktop-robot/index.html" hidden>阅读开发笔记</a>
+        <a id="work-repo" target="_blank" rel="noopener noreferrer" hidden>在 GitHub 查看原型</a>
+      </section>
+    </div>
+  </article>
+  <p id="missing" hidden>没有找到这个作品，请返回封面后重新选择。</p>
+  <noscript>请开启 JavaScript 来载入这段视频及简介。</noscript>
+</main>
+<script>
+"use strict";
+const projects = {
+  "rocket-ground-test": {
+    "title": "火箭发动机地面试车",
+    "time": "0:07",
+    "intro": "第一次制作金属火箭发动机并地面试车。"
+  },
+  "wearable-motion-mapping": {
+    "title": "外骨骼动作采集器",
+    "time": "0:22",
+    "intro": "一次低成本的数据采集尝试。用机械结构和电位器直接获取人体动作"
+  },
+  "silicone-tactile-array": {
+    "title": "硅胶触觉阵列",
+    "time": "0:37",
+    "intro": "这是一个硅胶触觉传感阵列的功能演示。手指按压传感器时，屏幕上的压力热图会变化，可以对着实际按压的位置看信号从哪里出现。",
+    "portrait": true
+  },
+  "rotor-prototype": {
+    "title": "折叠无人机",
+    "time": "0:20",
+    "intro": "一个可以快速释放的无人机，并通电测试"
+  },
+  "arm-hand-guiding": {
+    "title": "机械臂拖动示教数据采集器",
+    "time": "0:12",
+    "intro": "用手带机械臂走一遍，再回放，超低成本且不依赖从臂",
+    "repo": "https://github.com/tianrui-li-0/xlerobot-kinesthetic-recorder"
+  },
+  "desktop-robot-assistant": {
+    "title": "SO-101 桌面助手",
+    "time": "0:36",
+    "intro": "我用 SO-101 做了一个桌面助手原型。腕部摄像头负责看，麦克风和中文语音识别负责听，上层模型判断要继续观察，还是结合画面和语音作答。机械臂也能转向人，表达它在注意谁。视频展示的是转向跟随和实际响应；开发笔记记录了详细信息",
+    "media": "desktop-robot-tracking",
+    "note": true
+  }
+};
+const get = id => document.getElementById(id);
+const workPage = get("work"), player = get("work-video"), mediaError = get("media-error");
+function showProject() {
+  const key = location.hash.slice(1);
+  const id = key === "desktop-robot-tracking" ? "desktop-robot-assistant" : key;
+  const found = Object.hasOwn(projects, id);
+  get("missing").hidden = found;
+  workPage.hidden = !found;
+  player.pause();
+  if (!found) {
+    player.removeAttribute("src");
+    player.load();
+    document.title = "作品 · Ray";
+    return;
+  }
+  const work = projects[id];
+  document.title = work.title + " · Ray";
+  get("work-title").textContent = work.title;
+  get("work-intro").textContent = work.intro;
+  get("work-caption").textContent = "片长 " + work.time;
+  get("work-note").hidden = !work.note;
+  const repoLink = get("work-repo");
+  repoLink.hidden = !work.repo;
+  if (work.repo) repoLink.href = work.repo;
+  else repoLink.removeAttribute("href");
+  get("work-figure").classList.toggle("portrait", !!work.portrait);
+  mediaError.hidden = true;
+  player.setAttribute("aria-label", work.title + "的视频");
+  const mediaId = work.media || id;
+  player.poster = "media/" + mediaId + ".jpg";
+  player.src = "media/" + mediaId + ".mp4";
+}
+player.addEventListener("error", () => { mediaError.hidden = workPage.hidden || !player.error; });
+addEventListener("hashchange", showProject);
+showProject();
+</script>
+<script src="../navigation.js"></script>
+</body>
+</html>

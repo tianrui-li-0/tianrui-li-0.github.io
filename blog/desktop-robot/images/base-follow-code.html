@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;background:#111827;color:#e5e7eb;font:20px/1.65 Consolas,'Microsoft YaHei',monospace;padding:36px}.window{background:#1e293b;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px #0005}.bar{background:#334155;padding:12px 22px;color:#cbd5e1;font:16px 'Microsoft YaHei',sans-serif}.dots{color:#fb7185;letter-spacing:6px;margin-right:16px}pre{margin:0;padding:28px 36px;white-space:pre-wrap}.comment{color:#94a3b8}.name{color:#7dd3fc}.keyword{color:#c4b5fd}.num{color:#fbbf24}
+</style><div class="window"><div class="bar"><span class="dots">●●●</span>soarm101_base_follow_worker.py · 底座跟踪代码摘录</div><pre><span class="comment"># 根据画面水平误差，计算限幅后的底座目标</span>
+error_x = max(-<span class="num">0.5</span>, min(<span class="num">0.5</span>, float(target.get(<span class="name">"x"</span>, <span class="num">0.5</span>)) - <span class="num">0.5</span>))
+deadband = <span class="num">0.06</span>
+<span class="keyword">if</span> abs(error_x) &lt;= deadband:
+    <span class="keyword">return</span>
+
+step = max(-<span class="num">1.5</span>, min(<span class="num">1.5</span>, error_x * <span class="num">5.0</span>))
+goal = max(home - <span class="num">55.0</span>, min(home + <span class="num">55.0</span>, position + step))
+self.bus.write(<span class="name">"Goal_Position"</span>, BASE, goal)</pre></div></html>

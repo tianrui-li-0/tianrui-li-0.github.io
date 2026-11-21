@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一个从废料中生长的高中生的进化史 · Ray</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --paper: #e8e6df;
+    --muted: #aaa69f;
+    --accent: #c8b89b;
+    --rule: rgba(232, 230, 223, .17);
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", SimSun, serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+  body {
+    margin: 0; color: var(--paper); text-wrap: pretty;
+    background: radial-gradient(ellipse 70rem 37rem at 79% 0, #181819, #09090a 72%);
+    font: 400 1.0625rem/1.98 var(--serif);
+  }
+  main { max-width: 74rem; margin-inline: auto; padding: 1.75rem clamp(1.25rem, 5vw, 4rem) 4.5rem; }
+  .article-nav {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding-bottom: 1.1rem; border-bottom: 1px solid var(--rule); letter-spacing: .12em;
+  }
+  .article-nav span { color: var(--muted); }
+  a { color: inherit; text-underline-offset: .3em; text-decoration-color: var(--rule); }
+  a:hover { color: #fff; text-decoration-color: currentColor; }
+  a:focus-visible { outline: 1px solid currentColor; outline-offset: .25rem; }
+  .cover {
+    display: grid; grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.75rem); padding: clamp(3rem, 8vw, 6rem) 0 clamp(2.25rem, 6vw, 4rem);
+  }
+  .cover .kicker { color: var(--accent); letter-spacing: .14em; margin: 0 0 1.35rem; }
+  .cover .lede { color: var(--muted); max-width: 24em; margin: 1.4rem 0 0; }
+  .cover figure img { width: 100%; aspect-ratio: 1.32; object-fit: cover; filter: grayscale(.7) brightness(.88); }
+  .cover figcaption { text-align: left; }
+  .period, .chapters li span, figcaption { color: var(--muted); }
+  .article-nav, .kicker, .period, .chapters li span, figcaption, footer { font-size: .875rem; }
+  h1 { font: 400 clamp(1.85rem, 4.1vw, 3.55rem)/1.35 var(--serif); margin: 0; letter-spacing: .02em; }
+  h2 { font: 400 clamp(1.45rem, 4.2vw, 2rem)/1.5 var(--serif); margin: 0; }
+  .chapters, article section, footer { max-width: 42rem; margin-inline: auto; }
+  .chapters { border-block: 1px solid var(--rule); }
+  .chapters summary { padding: .8rem .1rem; color: var(--accent); cursor: pointer; letter-spacing: .07em; }
+  .chapters summary span { float: right; color: var(--muted); font-size: .875rem; }
+  .chapters summary:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+  .chapters ol { margin: 0 0 1rem; padding-left: 1.35rem; }
+  .chapters li { padding: .2rem 0; }
+  .chapters li span { white-space: nowrap; display: inline-block; margin-inline-start: .65rem; }
+  section { margin-top: clamp(3rem, 7vw, 5rem); }
+  section p { margin: 1.2rem 0; }
+  section .period { margin: .25rem 0 1.5rem; }
+  .photos { display: grid; gap: 1rem; margin: 1.65rem 0; }
+  .photos.pair { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  figure { margin: 0; }
+  figure img {
+    display: block; width: auto; max-width: 100%; height: auto; max-height: 34rem;
+    margin-inline: auto; object-fit: contain; border: 1px solid var(--rule);
+  }
+  figcaption { text-align: center; margin-top: .55rem; line-height: 1.6; }
+  footer { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+  @media (max-width: 830px) {
+    .cover { grid-template-columns: minmax(0, 1fr); }
+    .cover figure img { aspect-ratio: 1.7; object-position: center 46%; }
+    h1 { font-size: clamp(1.6rem, 6.7vw, 3.1rem); }
+  }
+  @media (max-width: 540px) { .photos.pair { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main>
+  <nav class="article-nav" aria-label="文章导航"><a href="../../site.html#home" data-return>返回</a><span>RAY</span></nav>
+  <article>
+    <header class="cover">
+      <div>
+        <p class="kicker">航行档案 · 2020–2026</p>
+        <h1>一个从废料中生长的<br>高中生的进化史</h1>
+        <p class="lede">从家里搭的工作台开始。我做过外骨骼，靠卖游戏道具攒过下一次试错的钱，后来开始做机器人。</p>
+      </div>
+      <figure><img src="images/exoskeleton.jpg" alt="我穿着重新设计的上肢外骨骼，背对镜头" width="746" height="622" decoding="async"><figcaption>试穿自制的上肢外骨骼</figcaption></figure>
+    </header>
+    <details class="chapters" aria-label="文章目录"><summary>章节目录 <span>共五章</span></summary><ol><li><a href="#chapter-1">热熔胶，实验室和独自前往深圳的车票</a><span>2020–2022</span></li><li><a href="#chapter-2">学校和外骨骼</a><span>2023–2024</span></li><li><a href="#chapter-3">靠做游戏道具继续做项目</a><span>2024–2025</span></li><li><a href="#chapter-4">重新做外骨骼</a><span>2025–2026</span></li><li><a href="#chapter-5">具身智能</a><span>2026</span></li></ol></details>
+    <section aria-labelledby="chapter-1">
+<h2 id="chapter-1">第一章　热熔胶，实验室和独自前往深圳的车票</h2>
+<p class="period">2020–2022</p>
+<p>在那时候我在家自己搭了个实验室和工作台，单纯想要成为电影里那种很酷的的科学家，做一些让高锰酸钾变色，自制烟花之类的小实验，或者用pvc水管和热熔胶组装的“水下喷气背包”，我买了两个巨大的直流电机和两个巨大的电池，把绳子泡进蜡里面，缠在电机轴上做防水，因为我觉得摩擦生热把蜡融化了，然后水又把蜡给冻上了就是完美防水</p>
+<div class="photos pair">
+<figure><img src="images/word/image1.jpg" alt="早期实验中佩戴防护装备的截图" width="1224" height="1591" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image2.jpg" alt="最初在家搭起来的工作台" width="1224" height="908" loading="lazy" decoding="async"><figcaption>最初在家搭起来的工作台</figcaption></figure>
+</div>
+<div class="photos pair">
+<figure><img src="images/word/image3.jpg" alt="我和早期制作的原型" width="1224" height="1889" loading="lazy" decoding="async"><figcaption>我和早期制作的原型</figcaption></figure>
+<figure><img src="images/word/image4.jpg" alt="早期实验的操作画面" width="1224" height="1977" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image5.jpg" alt="早期制作的带叶片部件" width="1224" height="1297" loading="lazy" decoding="async"></figure>
+</div>
+<p>还有从二手航模上拆下来的舵机，纸板和线做出的简易外骨骼，但我依旧想做点什么更酷，更成熟的，能用的东西出来</p>
+<div class="photos pair">
+<figure><img src="images/word/image6.jpg" alt="纸板外骨骼的试装画面" width="1224" height="1941" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image7.jpg" alt="纸板外骨骼的结构和连线" width="1224" height="1564" loading="lazy" decoding="async"></figure>
+</div>
+<p>然后我知道了arduino（单片机开发平台），我意识到我真的可以亲手创造什么东西，我可以做更多，我把25kg扭矩的舵机安在了手臂上，把压力传感器安装在了肌肉上，实现了发力舵机就能把我手给顶起来的效果</p>
+<div class="photos pair">
+<figure><img src="images/word/image8.jpg" alt="能辅助抬臂的第一版外骨骼" width="1224" height="1979" loading="lazy" decoding="async"><figcaption>能辅助抬臂的第一版外骨骼</figcaption></figure>
+<figure><img src="images/word/image9.jpg" alt="早期外骨骼的控制电路" width="1224" height="1787" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image10.jpg" alt="早期外骨骼的实验工作台" width="1224" height="892" loading="lazy" decoding="async"></figure>
+</div>
+<p>我把这个成果录了下来，剪成了短视频，发到了抖音，获得了60万的播放量，那是我第一次享受到被别人认可，做出成果的快乐，也就是在这时候认识了我的极客朋友们，也就是在这时候，我认意识到我需要一个平台</p>
+<div class="photos">
+<figure><img src="images/word/image11.jpg" alt="早期项目发布到抖音的页面" width="1224" height="1420" loading="lazy" decoding="async"></figure>
+</div>
+<p>我只知道“大疆”这两个字代表最顶尖的科技公司，所以我凭着直觉去QQ群搜“大疆夏令营”，凭热爱报名，成为200人中被录取的25个（左右），虽然正值疫情，我也买了前往深圳的车票，那是我第一次见到我认为真正的开发者：手焊板子、手写代码、从零组装机器人</p>
+<div class="photos pair">
+<figure><img src="images/word/image12.jpg" alt="深圳夏令营的装配现场" width="1224" height="674" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image13.jpg" alt="在深圳见到的装配工作台" width="1224" height="888" loading="lazy" decoding="async"><figcaption>在深圳见到的装配工作台</figcaption></figure>
+<figure><img src="images/word/image14.jpg" alt="深圳夏令营的活动现场" width="1224" height="898" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image15.jpg" alt="在深圳夏令营与同伴合影" width="1224" height="898" loading="lazy" decoding="async"></figure>
+</div>
+</section>
+<section aria-labelledby="chapter-2">
+<h2 id="chapter-2">第二章　学校和外骨骼</h2>
+<p class="period">2023–2024</p>
+<p>然后我回归学校了，上了9年级，中考临近，但我发挥失常，上了个普高，我上是市重点的朋友们都觉得我完了，然而，非常有趣的是普高宽松的管束让我有了更多发挥空间，信息老师给我大量预算，我以为是单纯支持个人创造，后来才发现是——学校需要科创奖状多点面子，但不能让同一个学生连续上台（大概是他们所谓的不良风气），最后连设备带作品都被收走了</p>
+<p>然后我15岁第一次理解了这种奇怪的的困境：用我的成果，却不允许我一直发光，给我资源干事，但随时可以没收我的最终成果</p>
+<p>回头看，这段经历让我明白一件事：资源和成果的归属，应该在开始前就明确了，不是不信任谁，是让两边都平等</p>
+<div class="photos">
+<figure><img src="images/word/image16.jpg" alt="在学校做科创项目时获得的证书" width="1224" height="1596" loading="lazy" decoding="async"></figure>
+</div>
+<p>不过我依然选择开发外骨骼，但最后因为技术问题，我的作品是失败的，框架是在家门口的五金店花了几块钱借用了焊枪和铁条拼接的，为了追求极致的动力，我使用了500千克级别的工业舵机，同时，因为资金的支持，我开始用一种近乎天真的方式追求我的航天梦——自己造固体燃料火箭，结果因为操作不当导致手和脸被炸伤，我只记得当时凑上去看了一眼燃料盆然后整个脸和手全都被火焰覆盖了，但后来我造机器人的时候，首先看的就是如何快速让所有东西瞬间停下来，还有始终在可控范围内</p>
+<p>回看一下这依旧愚蠢至极，500千克的扭矩能在没有限位的情况下瞬间扭断任何东西，包括手臂，而固体推进剂燃烧时的高温非常危险，我没失明就不错了</p>
+<div class="photos pair">
+<figure><img src="images/word/image17.jpg" alt="手部受伤后的照片" width="1224" height="796" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image18.jpg" alt="高中时制作的外骨骼试穿画面" width="1224" height="1598" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image19.jpg" alt="外骨骼项目用到的舵机" width="622" height="962" loading="lazy" decoding="async"></figure>
+</div>
+<p>当然，这之后我暂时放下了科技类项目的开发，但是我依旧想做点什么，所以决定在仿真中先锻炼下自己，我开始学习solidworks这种工业建模软件，因为宇树的影响开始构思自己的机器人，很长一段时间我都在理论的世界中学习，又接触了机器人学，pid，无刷电机控制理论，我开始真正思考一个成熟的，可靠的系统是什么样的，或许我当时根本不知道，两年之后我会用这种思想去试图改变机器人的浪潮，而同时我遭遇了一点经济上的小状况</p>
+<div class="photos">
+<figure><img src="images/word/image20.jpg" alt="学习工业建模时的屏幕画面" width="1224" height="678" loading="lazy" decoding="async"></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image21.jpg" alt="在 SolidWorks 里构思的机器人" width="1224" height="671" loading="lazy" decoding="async"><figcaption>在 SolidWorks 里构思的机器人</figcaption></figure>
+</div>
+</section>
+<section aria-labelledby="chapter-3">
+<h2 id="chapter-3">第三章　靠做游戏道具继续做项目</h2>
+<p class="period">2024–2025</p>
+<p>曾经的家被租出去收房租，我的很多东西和成果，一夜之间成了废品，我当时觉得我可能要完了，被扔进荒野，因为我的父母从不愿意把真实的经济状况告诉我，我只知道我们从区中心搬到了一个地图上的乡村边境，当时我只会建模和剩下一台喷嘴几乎快报废的二手3d打印机，那是我和我的朋友一人出500块钱买的，我知道如果明天这台机器也坏了，我就真的一无所有了</p>
+<div class="photos">
+<figure><img src="images/word/image22.jpg" alt="早期用过的二手 3D 打印机" width="1706" height="1279" loading="lazy" decoding="async"><figcaption>早期用过的二手 3D 打印机</figcaption></figure>
+</div>
+<p>而某种神秘的直觉驱使着我在q群搜索了我喜欢的游戏ip的产品周边群，然后就进了一个人最多的，一开始那个群主让我当产品研发，因为我会建模，结果过了一段时间，群主被爆出黑料，因为抄袭别人的画，结果被挂到网上，群一度面临凉了，但是360多人的群，我真的不太舍得放，也可能是因为我只剩这个了，所以我新建了一个群，尽最大努力把老群的人带到了新群，群主从此退网（啧，真不负责）</p>
+<div class="photos pair">
+<figure><img src="images/word/image23.jpg" alt="和玩家交流游戏道具想法的聊天截图" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image24.jpg" alt="游戏道具群的讨论截图" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+</div>
+<p>我禁售了那些抄袭的产品，然后换成了自己的，因为只有我能做出3d产品，所以我当时就去学了另一种艺术建模，并非工程零件，是nomad sclupt那种q版公仔艺术建模，然后做出了非常还原游戏装备的面具，公开了用铁锤测试产品质量的视频，然后开始出圈，我开始不定期抽奖吸引更多人，开始接定制</p>
+<div class="photos pair">
+<figure><img src="images/word/image25.jpg" alt="在软件里制作面具模型" width="1224" height="2688" loading="lazy" decoding="async"><figcaption>在软件里制作面具模型</figcaption></figure>
+<figure><img src="images/word/image26.jpg" alt="试戴面具原型的视频截图" width="1224" height="2153" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image27.jpg" alt="试戴自己做出来的面具" width="918" height="2016" loading="lazy" decoding="async"><figcaption>试戴自己做出来的面具</figcaption></figure>
+</div>
+<p>之后我就觉得哇，这来钱好快，当时我可能觉得这是我梦想中的生活，然后每天就想着如何开发更多新产品，甚至结合了我的单片机技术，给道具添加了声音光和烟雾，一次收几千</p>
+<div class="photos">
+<figure><img src="images/word/image28.jpg" alt="制作道具时的工作台" width="1706" height="1280" loading="lazy" decoding="async"><figcaption>制作道具时的工作台</figcaption></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image29.jpg" alt="发光道具的制作和测试记录" width="1224" height="1821" loading="lazy" decoding="async"></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image30.jpg" alt="发光道具的点亮测试" width="1224" height="795" loading="lazy" decoding="async"></figure>
+</div>
+<p>最后我研发的一个产品是一个会发光的瓶子，是游戏里的关键道具，因为所有人都喜欢，质感满分，纯玻璃+塑料底座，而且加上我建模有机械风格，而且我每次都会让买了这个产品的人选择拍个视频分享到平台免运费或者什么都不做，所以直接一周几十单，B站播放量达到8万</p>
+<div class="photos">
+<figure><img src="images/word/image31.jpg" alt="发光瓶道具的装配现场" width="1706" height="1279" loading="lazy" decoding="async"></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image32.jpg" alt="道具商品页面截图" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image33.jpg" alt="做出来的发光道具瓶" width="1224" height="920" loading="lazy" decoding="async"><figcaption>做出来的发光道具瓶</figcaption></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image34.jpg" alt="发光道具瓶的 B 站发布页面" width="1224" height="2335" loading="lazy" decoding="async"></figure>
+</div>
+<p>但就是因为这个我的群人数一下涨到八百，最后被逼得迫不得已改成每月卖40个，购买名额谁抢到就是谁的，但是最后发现我的时间不够，因为我必须手工制作每一个订单，而且产品会出故障，售后，退货，因为全部是手工的，然后我意识到我的大脑不应该拿来做这些事情，当然最后我赚到了差不多三万块钱</p>
+<div class="photos">
+<figure><img src="images/word/image35.jpg" alt="游戏道具群的聊天截图" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+</div>
+</section>
+<section aria-labelledby="chapter-4">
+<h2 id="chapter-4">第四章　重新做外骨骼</h2>
+<p class="period">2025–2026</p>
+<p>于是我放弃了做道具，我不能出卖时间换钱，我将赚到的所有的钱重新购买了一台全新的打印机，还有制造外骨骼所需最昂贵的零件—无刷减速电机，毕竟我做道具是为了赚钱追梦，那就把钱砸在我的梦想上</p>
+<p>结合我之前学到的所有工程知识，我设计出了一个全自由度的上肢外骨骼，但非常可惜的是，在目前我的有限认知里，我觉得肩关节只是两个轴承在转，所以我一次又一次的设计结构打印，然后穿戴，然后失败，废料堆的满地都是，我几乎天天收到打印机耗材的快递，我意识到我不能再这么干了，我的资金并不是无限的</p>
+<div class="photos">
+<figure><img src="images/word/image36.jpg" alt="外骨骼零件的早期设计记录" width="929" height="669" loading="lazy" decoding="async"></figure>
+</div>
+<div class="photos pair">
+<figure><img src="images/word/image37.jpg" alt="台面上的外骨骼零件" width="1224" height="674" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image38.jpg" alt="试穿上肢外骨骼" width="1224" height="684" loading="lazy" decoding="async"><figcaption>试穿上肢外骨骼</figcaption></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image39.jpg" alt="放在模型旁边的外骨骼部件" width="1224" height="675" loading="lazy" decoding="async"><figcaption>放在模型旁边的外骨骼部件</figcaption></figure>
+</div>
+<p>所以我开始学习人体运动学，肩关节解剖以及髋关节解剖，思考和让外骨骼和人体耦合，中途复现了哥伦比亚大学的阵列压力传感器，还改良成了硅胶版本的，为了解决手部压力传感器问题，获得100万播放，上热门了</p>
+<div class="photos"><figure><img src="images/tactile-video-bilibili.jpg" alt="「自制压力触觉传感硅胶材料」在 B 站获热门收录，截图时播放量为 105.5 万" width="1280" height="585" loading="lazy" decoding="async"><figcaption>B 站热门收录截图</figcaption></figure></div>
+<div class="photos pair">
+<figure><img src="images/word/image40.jpg" alt="硅胶触觉传感原型的演示视频页面" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image41.jpg" alt="外骨骼相关的 B 站视频页面" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+</div>
+<p>同时我意识到这些关节都有一个非常重要，但被我忽视的因素——滑动自由度，当然解决了这个问题之后，我设计的外骨骼也终于能穿了，而且真正实现了零阻力</p>
+<div class="photos">
+<figure><img src="images/word/image42.jpg" alt="穿上重新设计后的上肢外骨骼" width="746" height="622" loading="lazy" decoding="async"></figure>
+</div>
+<p>视频分两段，我先把短视频发到了B站上，获得了一定的播放量，也就是在这时候，中国外骨骼开发者社区向我发来参会邀请，很多人表现出了合作的意向，嘉立创发来广告合作邀请，我差点签下了奇怪的协议导致著作权差点又不是我的了，不过还好最后这种事没有发生</p>
+<div class="photos">
+<figure><img src="images/word/image43.jpg" alt="和外骨骼开发者交流的聊天截图" width="1212" height="1452" loading="lazy" decoding="async"></figure>
+</div>
+<p>于是顺理成章的我发布了后来的长视频，详细记录了我的思考和设计，制造过程，但播放量不理想，大概是因为设备和剪辑技术不理想，最后只有几千播放量，虽然我的朋友们都说我有百大up主的气质，我有点无法接受，给视频充了钱，但也仅仅是播放量达到了一万左右，视频死了就是死了，和嘉立创的合作也不了了之，我的朋友愿意看完是因为他相信我能做出像百大up主一样的视频，但很显然，其他人不见得有这个耐心</p>
+<div class="photos">
+<figure><img src="images/word/image44.jpg" alt="外骨骼长视频的 B 站发布页面" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+</div>
+<p>之后参加了2025年的外骨骼开发者大会，而且成了第一个上去演讲的，咨询我的人一大堆，我从未获得过如此成就，我自认为这是一个巨大的成功，最后，我和一个交大的外骨骼创业者聊的很嗨，最后他开车把我送回了家，挺好的，不用买车票了，那一晚，我真正做到了小时候在大疆夏令营中看到的开发者的模样，所以我重新开始思考那些曾经说过想改变世界的话，而这次，我开始真正意识到我有改变什么东西的资格了，我开始思考那些在我大脑里模糊许久的东西，一种信念，一种理想，一种支撑着我不会停下的东西：是要把人类的肉体和注意力，从这种低思考、重复性的物理劳动和互联网的注意力黑洞中彻底解放出来，人类的大脑和精神应该去消费，创作艺术、去进行高级审美、去探索未知的荒原，去做那些充满神性的事情，比如重新盯着地上的昆虫和风景发呆，我就挺喜欢抓虫子的，而不是在重复劳动，打工，送外卖和停滞的审美里逐渐退化。我称之为—“解放人类”</p>
+<div class="photos pair">
+<figure><img src="images/word/image45.jpg" alt="外骨骼项目的交流记录" width="1224" height="2406" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image46.jpg" alt="外骨骼项目合作沟通的截图" width="1224" height="2688" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image47.jpg" alt="外骨骼项目的视频合作沟通记录" width="1224" height="2373" loading="lazy" decoding="async"></figure>
+<figure><img src="images/word/image48.jpg" alt="外骨骼开发者大会现场" width="1280" height="1706" loading="lazy" decoding="async"><figcaption>外骨骼开发者大会现场</figcaption></figure>
+</div>
+<div class="photos">
+<figure><img src="images/word/image49.jpg" alt="外骨骼项目相关的消息记录" width="1224" height="1807" loading="lazy" decoding="async"></figure>
+</div>
+<p>但也正是在这种狂热中，我产生了完全相反的直觉，外骨骼的繁荣是一场泡沫，虽然数据很诱人，很多中下游公司最后都不知所踪</p>
+<p>但比破产和交付量，订单更重要的是，外骨骼究竟是为了什么，我始终找不到第二个答案，只有一个———让人运动更轻松，或者解决搬运场景的工作量</p>
+<p>我并不是看不起这些目标，也不是因为外骨骼不赚钱，是因为外骨骼这个赛道，我看不到任何我脑中那个“解放人类”的可能。如果有些工作人类干起来太痛苦，那为什么不直接让机器人来？？？如果代替能比增强带来更好的效果，能让我们更自由的生活，那为什么不直接选择代替呢，因为如果是机器人，或许我们真的可以在未来拥有不被束缚，到处乱跑的权力，而不是被琐事困住</p>
+</section>
+<section aria-labelledby="chapter-5">
+<h2 id="chapter-5">具身智能</h2>
+<p class="period">2026</p>
+<p>然后就是今天的故事，我开始思考一种真正接近梦想的方式</p>
+<p>人形机器人，我认为这是通往我“解放人类”的最关键的一块拼图，而我同时也对机器人本身很着迷，这对我来说简直是从未见过的东西，流畅的动作，舞蹈，这让我看到了无限的可能性</p>
+<p>所以我决定从让机器人站起来开始，然后我也能像视频里那样随心所欲的控制机器人</p>
+<p>我开始针对这个目标开始动手，阅读前沿成果，日复一日</p>
+<p>最后我用分层（因为可控，很容易就能找到问题在哪）和课程学习的方式，让机器人学会了如何站起来</p>
+<div class="photos">
+<figure><img src="images/word/image50.jpg" alt="用于练习机器人站立的仿真界面" width="1224" height="680" loading="lazy" decoding="async"><figcaption>用于练习机器人站立的仿真界面</figcaption></figure>
+</div>
+<p>直到我慢慢开始发现不对劲，那些动作，amp，微调，模仿学习，这根本就不是让机器人解决问题的路，这些大多数只是让机器人学会更多花哨，视觉观感大于实际意义的动作，嗯，但这确实教会了我该怎么关掉画面看训练曲线了</p>
+<p>所以最终我把它当成了一个我的isaaclab/强化学习练习项目，这不是我想要的未来，至少我认为，那个机器人能完成那些无聊且琐碎的工作，那个“解放人类”的未来不会在这个项目本身和未来被体现</p>
+<p>我不接受这样的未来，所以我会亲手把它创造出来，用我自己的方式</p>
+<p>所以我开启了这个项目，用我六年积累的所有工程经验，我说服了开金属加工厂的同学，他给了我一块完全空荡荡的、100平米的毛坯场地让我完成这件事，我将在这里完成我在xlerobot上的第一次尝试</p>
+<p>当然，三个月过去了，我意识到我可能无法在通用操作领域和顶尖实验室和大型企业几百张显卡对拼，而几乎所有人都没有意识到机器人最终要出现在人的身边，机器人面对的不仅是任务中的corner cases，还有人，于是就有了这个偏探索类型的项目，我真的想知道机器人该如何面对这些问题</p>
+<p>目前，这一切都没有结束</p>
+<p class="period"><time datetime="2026-09-10">2026-9-10</time>　持续更新中</p>
+</section>
+  </article>
+  <footer><a href="../../site.html#home" data-return>返回</a></footer>
+</main>
+<script src="../../navigation.js"></script>
+</body>
+</html>
