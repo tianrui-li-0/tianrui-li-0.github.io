@@ -7,9 +7,9 @@ The existing static portfolio remains at the repository root. `intro-audio.js` r
 
 ## Inbox
 
-Cloudflare Pages runs `backend/worker.mjs` with the D1 binding in `wrangler.toml`. Messages are never public. The admin uses a one-time private setup link to choose a password. Passwords are salted and hashed; sessions are random, expiring, HttpOnly cookies whose hashes are stored in D1. The server checks request origins and applies submission/login limits. Archive actions are reversible.
+Cloudflare Pages runs `backend/worker.mjs` with the D1 binding in `wrangler.toml`. Messages are never public. The owner enters through a private management link; no password is needed. Its secret fragment is removed from browser history immediately and exchanged for a random, HttpOnly, Secure, SameSite cookie. Only session hashes are stored in D1. Authorized browsers stay signed in for 90 days; regular visits renew that period. Existing authorized sessions continue working. The server checks request origins and applies submission/access limits. Archive actions are reversible.
 
-`ADMIN_SECRET` must be configured as a Cloudflare Pages production secret; never put it in this repository. Preview deployments have no binding to the production inbox. The initial setup token is derived from that secret and becomes unusable once the owner sets their password.
+`ADMIN_SECRET` must be configured as a Cloudflare Pages production secret; never put it in this repository. Preview deployments have no binding to the production inbox. The private access token is derived from that secret with a distinct HMAC purpose. Anyone with the private link can authorize a browser, so never publish or commit that link. Logout revokes the current browser session; the private link can authorize it again. Changing the server secret rotates the access link; revoke sessions separately if needed. Legacy password hashes, if present from the first release, are no longer used and no password endpoints remain.
 
 ## Validate and publish
 

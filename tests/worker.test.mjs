@@ -29,13 +29,12 @@ function fixture() {
     method, headers: {'Origin': requestOrigin, 'Content-Type': 'application/json', 'CF-Connecting-IP': ip, ...(cookie ? {Cookie: cookie} : {}), ...headers},
     ...(body !== undefined ? {body: JSON.stringify(body)} : {})
   }), env);
-  const password = 'correct-horse-private-inbox';
-  const token = createHmac('sha256', env.ADMIN_SECRET).update('setup:tianruili:v1').digest('base64url');
+  const key = createHmac('sha256', env.ADMIN_SECRET).update('owner-access:tianruili:v1').digest('base64url');
   async function setup() {
-    const response = await call('/api/admin/setup', {method: 'POST', body: {password, token}});
+    const response = await call('/api/admin/access', {method: 'POST', body: {key}});
     assert.equal(response.status, 200); return response.headers.get('set-cookie').split(';')[0];
   }
-  return {DB, env, call, setup, password, token};
+  return {DB, env, call, setup, key};
 }
 test('message delivery persists plain text and retries cannot duplicate it', async () => {
   const f = fixture(), id = randomUUID(), text = '<img src=x onerror=alert(1)>\n这是一封真实来信。';
@@ -59,23 +58,42 @@ test('invalid and cross-site messages are rejected; honeypot never reaches inbox
   const overflow = new Request('https://tianruili.pages.dev/api/messages', {method:'POST', headers:{Origin:'https://tianruili.pages.dev','Content-Type':'application/json'}, body:'x'.repeat(24001)});
   assert.equal((await worker.fetch(overflow, f.env)).status, 413);
 });
-test('setup is owner-token-only and one-time; sessions are private and revoked on logout', async () => {
+test('private links authorize browsers without passwords; logout revokes access', async () => {
   const f = fixture();
-  assert.equal((await f.call('/api/admin/setup', {method:'POST', body:{password:f.password,token:'wrong'}})).status,403);
-  const cookie = await f.setup();
-  assert.equal((await f.call('/api/admin/setup', {method:'POST',body:{password:f.password,token:f.token}})).status,409);
-  assert.equal((await f.call('/api/admin/login',{method:'POST',body:{password:'incorrect'}})).status,401);
-  const login = await f.call('/api/admin/login',{method:'POST',body:{password:f.password}});
+  for (const key of [undefined, 'wrong', createHmac('sha256', f.env.ADMIN_SECRET).update('setup:tianruili:v1').digest('base64url')]) {
+    assert.equal((await f.call('/api/admin/access', {method:'POST', body:{key}})).status,403);
+  }
+  assert.equal((await f.call('/api/admin/access', {method:'POST', body:{key:f.key}, requestOrigin:'https://evil.example'})).status,403);
+  const login = await f.call('/api/admin/access',{method:'POST',body:{key:f.key}});
   assert.equal(login.status,200);
-  for(const flag of ['HttpOnly','Secure','SameSite=Strict','Path=/']) assert.ok(login.headers.get('set-cookie').includes(flag));
+  for(const flag of ['HttpOnly','Secure','SameSite=Strict','Path=/','Max-Age=7776000']) assert.ok(login.headers.get('set-cookie').includes(flag));
+  const cookie = login.headers.get('set-cookie').split(';')[0];
+  assert.notEqual(f.DB.sqlite.prepare('SELECT token_hash FROM admin_sessions').get().token_hash,cookie.split('=')[1]);
+  assert.deepEqual(await (await f.call('/api/admin/session',{cookie})).json(),{authenticated:true});
   assert.equal((await f.call('/api/admin/messages',{cookie})).status,200);
   assert.equal((await f.call('/api/admin/messages',{cookie:'__Host-ray_admin='+ 'a'.repeat(43)})).status,401);
+  assert.equal((await f.call('/api/admin/messages',{cookie,requestOrigin:'https://evil.example'})).headers.get('Access-Control-Allow-Origin'), null);
+  assert.equal((await f.call('/api/admin/login',{method:'POST',body:{password:'old-password'},cookie})).status,404);
+  assert.equal((await f.call('/api/admin/setup',{method:'POST',body:{},cookie})).status,404);
   assert.equal((await f.call('/api/admin/logout',{method:'POST',body:{},cookie,requestOrigin:'https://evil.example'})).status,403);
-  assert.equal((await f.call('/api/admin/logout',{method:'POST',body:{},cookie})).status,200);
+  const logout=await f.call('/api/admin/logout',{method:'POST',body:{},cookie});
+  assert.equal(logout.status,200); assert.ok(logout.headers.get('set-cookie').includes('Max-Age=0'));
   assert.equal((await f.call('/api/admin/messages',{cookie})).status,401);
-  const stored = f.DB.sqlite.prepare('SELECT password_hash FROM admin_settings').get().password_hash;
-  assert.notEqual(stored,f.password);
-  assert.equal((await f.call('/api/admin/messages',{cookie:login.headers.get('set-cookie').split(';')[0],requestOrigin:'https://evil.example'})).headers.get('Access-Control-Allow-Origin'), null);
+  assert.deepEqual(await (await f.call('/api/admin/session',{cookie})).json(),{authenticated:false});
+  assert.equal((await f.call('/api/admin/access',{method:'POST',body:{key:f.key}})).status,200);
+});
+
+test('existing sessions extend to 90 days while expired sessions stay unauthorized', async () => {
+  const f=fixture(), cookie=await f.setup();
+  f.DB.sqlite.prepare('UPDATE admin_sessions SET expires_at = ?').run(Date.now()+7*24*3600*1000);
+  const renewed=await f.call('/api/admin/session',{cookie});
+  assert.deepEqual(await renewed.json(),{authenticated:true});
+  assert.ok(renewed.headers.get('set-cookie').startsWith(cookie+';'));
+  assert.ok(f.DB.sqlite.prepare('SELECT expires_at FROM admin_sessions').get().expires_at>Date.now()+89*24*3600*1000);
+  assert.equal((await f.call('/api/admin/session',{cookie})).headers.get('set-cookie'),null);
+  f.DB.sqlite.prepare('UPDATE admin_sessions SET expires_at = ?').run(Date.now()-1);
+  assert.deepEqual(await (await f.call('/api/admin/session',{cookie})).json(),{authenticated:false});
+  assert.equal((await f.call('/api/admin/messages',{cookie})).status,401);
 });
 test('owner can read, archive, restore and paginate messages without losing them', async () => {
   const f = fixture(), cookie=await f.setup(), id=randomUUID();

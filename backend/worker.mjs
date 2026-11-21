@@ -1,5 +1,5 @@
 const enc = new TextEncoder();
-const SESSION_SECONDS = 7 * 24 * 3600;
+const SESSION_SECONDS = 90 * 24 * 3600;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const noStore = {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex, nofollow', 'Referrer-Policy': 'no-referrer'};
 class HttpError extends Error { constructor(status, message) { super(message); this.status = status; } }
@@ -18,10 +18,6 @@ function equal(a, b) {
   for (let i = 0; i < Math.max(a.length, b.length); i++) difference |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
   return difference === 0;
 }
-async function passwordHash(password, salt) {
-  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
-  return base64(await crypto.subtle.deriveBits({name: 'PBKDF2', hash: 'SHA-256', salt: unbase64(salt), iterations: 100000}, key, 256));
-}
 function cookieName(request) { return new URL(request.url).protocol === 'https:' ? '__Host-ray_admin' : 'ray_admin_dev'; }
 function cookie(request, token, age = SESSION_SECONDS) {
   return `${cookieName(request)}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${age}${new URL(request.url).protocol === 'https:' ? '; Secure' : ''}`;
@@ -34,7 +30,7 @@ async function session(request, env) {
   const token = sessionToken(request);
   if (!/^[A-Za-z0-9_-]{43}$/.test(token)) return null;
   const digest = await hash(token);
-  return await env.DB.prepare('SELECT token_hash FROM admin_sessions WHERE token_hash = ? AND expires_at > ?').bind(digest, Date.now()).first();
+  return await env.DB.prepare('SELECT token_hash, expires_at FROM admin_sessions WHERE token_hash = ? AND expires_at > ?').bind(digest, Date.now()).first();
 }
 async function newSession(request, env) {
   const token = randomToken();
@@ -104,28 +100,18 @@ async function route(request, env) {
     return json({ok: true}, 201);
   }
   if (path === '/api/admin/session' && request.method === 'GET') {
-    const configured = !!(await env.DB.prepare('SELECT id FROM admin_settings WHERE id = 1').first());
-    return json({configured, authenticated: !!(await session(request, env))});
+    const active = await session(request, env);
+    if (active && active.expires_at < Date.now() + 60 * 24 * 3600 * 1000) {
+      await env.DB.prepare('UPDATE admin_sessions SET expires_at = ? WHERE token_hash = ?').bind(Date.now() + SESSION_SECONDS * 1000, active.token_hash).run();
+      return json({authenticated: true}, 200, {'Set-Cookie': cookie(request, sessionToken(request))});
+    }
+    return json({authenticated: !!active});
   }
-  if (path === '/api/admin/setup' && request.method === 'POST') {
-    await limit(request, env, 'setup', 10, 900);
+  if (path === '/api/admin/access' && request.method === 'POST') {
+    await limit(request, env, 'owner-access', 8, 900);
     const body = await readJson(request);
-    const expected = await hmac(env.ADMIN_SECRET, 'setup:tianruili:v1');
-    if (!equal(body.token, expected)) throw new HttpError(403, '首次设置链接无效。');
-    if (typeof body.password !== 'string' || body.password.length < 12 || body.password.length > 200) throw new HttpError(400, '请设置 12–200 位的管理密码。');
-    const salt = base64(crypto.getRandomValues(new Uint8Array(16)));
-    const digest = await passwordHash(body.password, salt);
-    const result = await env.DB.prepare('INSERT INTO admin_settings(id, password_hash, salt, created_at) VALUES (1, ?, ?, ?) ON CONFLICT(id) DO NOTHING')
-      .bind(digest, salt, Date.now()).run();
-    if (!result.meta.changes) throw new HttpError(409, '密码已经设置过，请直接登录。');
-    return newSession(request, env);
-  }
-  if (path === '/api/admin/login' && request.method === 'POST') {
-    await limit(request, env, 'login', 8, 900);
-    const body = await readJson(request);
-    if (typeof body.password !== 'string' || body.password.length > 200) throw new HttpError(400, '请输入管理密码。');
-    const admin = await env.DB.prepare('SELECT password_hash, salt FROM admin_settings WHERE id = 1').first();
-    if (!admin || !equal(await passwordHash(body.password, admin.salt), admin.password_hash)) throw new HttpError(401, '密码不正确。');
+    const expected = await hmac(env.ADMIN_SECRET, 'owner-access:tianruili:v1');
+    if (!equal(body.key, expected)) throw new HttpError(403, '私人入口无效，请使用你保存的管理链接。');
     return newSession(request, env);
   }
   if (path === '/api/admin/logout' && request.method === 'POST') {
@@ -134,7 +120,7 @@ async function route(request, env) {
     return json({ok: true}, 200, {'Set-Cookie': cookie(request, '', 0)});
   }
   if (path.startsWith('/api/admin/')) {
-    if (!(await session(request, env))) throw new HttpError(401, '请先登录收件箱。');
+    if (!(await session(request, env))) throw new HttpError(401, '请用你的私人管理链接打开收件箱。');
     if (path === '/api/admin/messages' && request.method === 'GET') {
       const filter = url.searchParams.get('filter') || 'inbox';
       const condition = filter === 'archived' ? 'archived_at IS NOT NULL' : filter === 'unread' ? 'archived_at IS NULL AND read_at IS NULL' : 'archived_at IS NULL';

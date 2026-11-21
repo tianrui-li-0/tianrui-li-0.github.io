@@ -8,12 +8,6 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 CREATE INDEX IF NOT EXISTS messages_inbox ON messages(archived_at, created_at DESC, id DESC);
 CREATE INDEX IF NOT EXISTS messages_unread ON messages(read_at, archived_at);
-CREATE TABLE IF NOT EXISTS admin_settings (
-  id INTEGER PRIMARY KEY CHECK(id = 1),
-  password_hash TEXT NOT NULL,
-  salt TEXT NOT NULL,
-  created_at INTEGER NOT NULL
-);
 CREATE TABLE IF NOT EXISTS admin_sessions (
   token_hash TEXT PRIMARY KEY,
   expires_at INTEGER NOT NULL

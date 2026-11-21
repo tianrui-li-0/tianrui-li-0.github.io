@@ -1,15 +1,19 @@
 (() => {
   if (location.hostname === 'tianrui-li-0.github.io') { location.replace('https://tianruili.pages.dev/admin/' + location.hash); return; }
   const $ = id => document.getElementById(id);
-  let setupToken = new URLSearchParams(location.hash.slice(1)).get('setup');
-  if (setupToken) history.replaceState(null, '', location.pathname);
-  let isSetup = false, filter = 'inbox', next = null, generation = 0;
+  function takeAccessKey() {
+    const key = new URLSearchParams(location.hash.slice(1)).get('key');
+    if (location.hash) history.replaceState(null, '', location.pathname);
+    return key;
+  }
+  let accessKey = takeAccessKey();
+  let filter = 'inbox', next = null, generation = 0;
   function notice(id, text, error = false) { $(id).textContent = text; $(id).dataset.error = String(error); }
   async function api(path, options = {}) {
     const response = await fetch('/api/admin/' + path, {credentials: 'same-origin', ...options, headers: {'Content-Type': 'application/json', ...options.headers}});
     const body = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401 && path !== 'login') { $('inbox').hidden = true; $('auth').hidden = false; $('authForm').hidden = false; }
+      if (response.status === 401) { $('inbox').hidden = true; $('auth').hidden = false; notice('authStatus', '这台浏览器需要重新授权，请用你保存的私人管理链接打开。'); }
       throw new Error(body.error || '暂时无法连接，请稍后重试。');
     }
     return body;
@@ -60,21 +64,9 @@
     finally { if (current === generation) { $('refresh').disabled = false; $('more').disabled = false; } }
   }
   async function enter() {
-    $('auth').hidden = true; $('inbox').hidden = false; $('password').value = ''; $('confirmPassword').value = '';
-    $('confirmRow').hidden = true; $('confirmPassword').required = false; $('password').minLength = 1;
-    $('password').autocomplete = 'current-password'; $('authTitle').textContent = '私人收件箱'; $('authSubmit').textContent = '进入收件箱';
+    accessKey = null; $('auth').hidden = true; $('inbox').hidden = false;
     await load();
   }
-  $('authForm').addEventListener('submit', async event => {
-    event.preventDefault(); const password = $('password').value;
-    if (isSetup && password !== $('confirmPassword').value) { notice('authStatus', '两次输入的密码不一致。', true); return; }
-    $('authSubmit').disabled = true; notice('authStatus', isSetup ? '正在设置密码…' : '正在登录…');
-    try {
-      await api(isSetup ? 'setup' : 'login', {method: 'POST', body: JSON.stringify({password, ...(isSetup ? {token: setupToken} : {})})});
-      setupToken = null; isSetup = false; await enter();
-    } catch (error) { notice('authStatus', error.message, true); }
-    finally { $('authSubmit').disabled = false; }
-  });
   $('filters').addEventListener('click', event => {
     const target = event.target.closest('[data-filter]'); if (!target || target.dataset.filter === filter) return;
     filter = target.dataset.filter; next = null;
@@ -91,15 +83,18 @@
     try {
       const state = await api('session');
       if (state.authenticated) { await enter(); return; }
-      isSetup = !state.configured && !!setupToken;
-      if (!state.configured && !setupToken) { notice('authStatus', '请使用私人的首次设置链接创建管理密码。'); return; }
-      $('authTitle').textContent = isSetup ? '为来信留一把钥匙。' : '私人收件箱';
-      $('authDescription').textContent = isSetup ? '设置一个至少 12 位的管理密码。以后用它查看访客留言。' : '输入管理密码，看看访客写给你的话。';
-      $('authForm').hidden = false; $('confirmRow').hidden = !isSetup;
-      $('confirmPassword').required = isSetup; $('password').minLength = isSetup ? 12 : 1;
-      $('password').autocomplete = isSetup ? 'new-password' : 'current-password';
-      $('authSubmit').textContent = isSetup ? '设置密码并进入' : '进入收件箱'; notice('authStatus', '');
-    } catch (error) { notice('authStatus', error.message + ' 刷新页面可以重试。', true); }
+      if (accessKey) {
+        await api('access', {method: 'POST', body: JSON.stringify({key: accessKey})});
+        await enter(); return;
+      }
+      $('authDescription').textContent = '这里仅对你的已授权浏览器开放。';
+      notice('authStatus', '请用你保存的私人管理链接进入，无需输入密码。');
+    } catch (error) { notice('authStatus', error.message + ' 请重新打开私人管理链接重试。', true); }
   }
+  addEventListener('hashchange', () => {
+    const key = takeAccessKey();
+    if (!key) return;
+    accessKey = key; start();
+  });
   start();
 })();
