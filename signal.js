@@ -44,7 +44,4 @@
       message.readOnly = false; contact.readOnly = false;
     }
   });
-  message.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); form.requestSubmit(); }
-  });
 })();

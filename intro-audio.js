@@ -57,7 +57,7 @@
     if (enabled) { unlock(); key(); }
     updateButton();
   });
-  for (const event of ['pointerdown', 'keydown', 'touchend']) {
+  for (const event of ['pointerdown', 'touchend']) {
     addEventListener(event, e => { if (e.target !== button) unlock(); }, { capture: true, passive: true });
   }
   window.RayAudio = { key, unlock };

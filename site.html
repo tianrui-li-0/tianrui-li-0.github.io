@@ -286,7 +286,7 @@
 </head>
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
-<canvas id="c" aria-label="终端：按 Enter 离开地面"></canvas>
+<canvas id="c" aria-label="终端：点击离开地面"></canvas>
 <p id="live" class="sr" aria-live="polite"></p>
 <header class="hero-layer" id="hero-layer">
   <div class="hero-copy">
@@ -350,11 +350,11 @@
   <section id="path" aria-labelledby="h-path">
     <div class="hd"><h2 id="h-path">轨迹</h2><p>我是如何走到今天的</p></div>
     <ol class="path" id="pathList"><i class="fill" id="pathFill" aria-hidden="true"></i>
-      <li><span class="yr">01</span><div><h3>把好奇心做成实物</h3>
-        <p>我对几乎所有事情都感兴趣，做过火箭发动机，也尝试过外骨骼，我几乎会动手做出我想要的任何东西</p></div></li>
+      <li><span class="yr">01</span><div><h3>动手</h3>
+        <p>我对几乎所有事情都感兴趣，做过火箭发动机，也尝试过外骨骼，无人机，化学实验室...我几乎会动手做出我想要的任何东西</p></div></li>
       <li><span class="yr">02</span><div><h3>停滞</h3>
         <p>在某一次我决定制造一枚大型探空火箭后，我亲手搭完了整个数据记录和导航系统，然后在制作大型发动机的时候发生了燃料爆炸，我的手被炸伤了，非常伤，于是我不得不停止这些工作并考虑使用成品发动机，但这也给了我更多思考的机会，在见识到真正的前沿科技后我一直在想：人类未来会走到哪里，我们会生活在一个什么样的世界里？我能参与做些什么？</p></div></li>
-      <li><span class="yr">03</span><div><h3>自己赚钱，继续做东西</h3>
+      <li><span class="yr">03</span><div><h3>赚钱，继续做东西</h3>
         <p>为了赚钱我开始制作月亮计划的游戏道具和周边，并把赚到的钱全部投入外骨骼和机器人。但还是有不少项目做到一半因为没钱停下来。好吧，看来我想做的东西很多，但能投入的资源始终有限</p></div></li>
       <li><span class="yr">04</span><div><h3>Gap year，补上 AI 这块拼图</h3>
         <p>一个人的力量终究有限，我来到 N1 AI School 学习大模型。我想继续补齐实现这些想法所需要的知识，然后交到更多朋友</p></div></li>
@@ -410,7 +410,7 @@
 </nav>
 <button class="skip show" id="skip" type="button">跳过开场</button>
 <nav class="bar" id="bar" aria-label="控制">
-  <button id="replay">R 重播开场</button>
+  <button id="replay">重播开场</button>
   <button id="sound-toggle" type="button" aria-pressed="true">键盘声：开</button>
 </nav>
 <script src="intro-audio.js"></script>
@@ -446,8 +446,7 @@ function stamp() {                                 // 统一显示为 UTC+8
          `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC+8`;
 }
 const L_SPEED = `> 你正以 ${V} km/s 的速度绕太阳运行`;
-const L_ASK = TOUCH ? "> 离开地面？[轻触]" : "> 离开地面？[Y/n] ";
-const L_NO = `> 好的。不过你仍在以 ${V} km/s 移动。`;
+const L_ASK = TOUCH ? "> 离开地面？[轻触]" : "> 离开地面？[点击]";
 const lineText = l => (l === "@stamp" ? stamp() : l);
 function cursorPos() {
   const i = lines.length - 1;
@@ -465,7 +464,7 @@ function drawTerminal(now, solid) {
 function typeStep(now) {
   if (now < nextKey) return;
   if (!typingCurrent) {
-    if (!queue.length) { state = "prompt"; startAsk(); live.textContent = lines.map(lineText).join(" "); return; }
+    if (!queue.length) { state = "prompt"; live.textContent = lines.map(lineText).join(" "); return; }
     typingCurrent = queue.shift(); typed = ""; lines.push("");
   }
   const full = lineText(typingCurrent);
@@ -1173,33 +1172,13 @@ function fastLine() {                              // 打字阶段点一下：�
   lines[lines.length - 1] = typingCurrent;          // 整行补全
   typed = lineText(typingCurrent); typingCurrent = null;
   nextKey = performance.now() + 120;                 // 稍作停顿，让人看清，再接着打下一行
-  if (!queue.length) { state = "prompt"; startAsk(); live.textContent = lines.map(lineText).join(" "); }
+  if (!queue.length) { state = "prompt"; live.textContent = lines.map(lineText).join(" "); }
   requestFrame();
   return true;
-}
-let answer = "", askBase = "";                     // prompt 阶段：answer 是你敲进去的字符，按 Enter 才执行
-function startAsk() { askBase = lines[lines.length - 1]; answer = ""; }   // 记下提示行原文（含 [Y/n]）
-function typeChar(ch) {                             // 像终端一样把一个字符敲到提示行末尾
-  if (state !== "prompt") return;
-  window.RayAudio.key();
-  if (!askBase) askBase = lines[lines.length - 1];
-  answer += ch; lines[lines.length - 1] = askBase + answer; requestFrame();
-}
-function backspace() {
-  if (state !== "prompt" || !answer) return;
-  window.RayAudio.key();
-  answer = answer.slice(0, -1); lines[lines.length - 1] = askBase + answer; requestFrame();
-}
-function submitAnswer() {                           // 按 Enter：读当前这行敲进去的内容
-  if (state !== "prompt") return;
-  const a = answer.trim().toLowerCase();
-  if (a === "" || a === "y" || a === "yes") go();   // 空行或 y 都是离开地面（和真终端的默认项一致）
-  else if (a === "n" || a === "no") refuse();
 }
 function go() {
   if (state !== "prompt") return;
   window.RayAudio.key(true);
-  answer = ""; askBase = "";
   if (!REDUCED) sampleText();
   dust = []; lastF = 0;
   state = "go"; tGo = performance.now() - (REDUCED ? (PULL + 1) * 1000 : 0);
@@ -1210,13 +1189,6 @@ function skipIntro() {
   if (scrollOpen) return;
   state = "go"; tGo = performance.now() - (PULL + 1) * 1000;
   live.textContent = "已离开地面。BUILDING TOWARD THE STARS";
-  requestFrame();
-}
-function refuse() {
-  if (state !== "prompt") return;
-  answer = ""; askBase = "";
-  while (lines.length > 5) lines.splice(1, 1);     // 时间戳留在顶上，旧的往上推
-  queue = [L_NO, L_ASK]; state = "typing"; nextKey = performance.now() + 380;
   requestFrame();
 }
 function reset() {                                 // 完全回到刚打开页面的样子：重新从头打字
@@ -1230,7 +1202,7 @@ function reset() {                                 // 完全回到刚打开页�
   barEl.classList.remove("settled");
   distanceEl.classList.remove("on"); distanceEl.style.removeProperty("--distance-opacity");
   setHeroProgress(0);
-  lines = []; queue = ["@stamp", L_SPEED, L_ASK]; answer = ""; askBase = "";   // 和首次启动一样，重新一个字一个字打出来
+  lines = []; queue = ["@stamp", L_SPEED, L_ASK];   // 和首次启动一样，重新一个字一个字打出来
   state = "boot"; bootT = performance.now(); nextKey = 0;
   live.textContent = "";
   requestFrame();
@@ -1292,33 +1264,13 @@ function resize() {
   X0 = Math.max(20, Math.round(W * 0.08));
   FS = W < 640 ? 18 : W < 1100 ? 24 : 28;
   ctx.font = `${FS}px ${MONO}`;                    // 最长一行放不下时按比例缩小
-  const widest = Math.max(...[L_SPEED, L_NO, L_ASK, stamp()].map(s => ctx.measureText(s + " ").width + FS));
+  const widest = Math.max(...[L_SPEED, L_ASK, stamp()].map(s => ctx.measureText(s + " ").width + FS));
   if (widest > W - X0 - 16) FS = Math.floor(FS * (W - X0 - 16) / widest);
   LH = Math.round(FS * 1.7); Y0 = Math.round(H * 0.38);
   layout(); buildStars(); buildGround(); staticOK = false;
   glResize();
   layoutDirty = true;
 }
-addEventListener("keydown", e => {
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.target.closest && e.target.closest("input, textarea")) return;   // 在联系框里打字时不触发快捷键
-  if (e.target.closest && e.target.closest("button, a[href]") && (e.key === "Enter" || e.key === " ")) return;
-  const k = e.key.toLowerCase();
-  if (state === "go") {
-    if (k === "escape" || k === "enter") { e.preventDefault(); skipIntro(); return; }   // 拉远时回车/Esc 跳过
-    if (k === " ") return;                         // 定格后空格交给浏览器翻页
-  }
-  if (state === "boot" || state === "typing") {
-    if (k === "enter" || k === " " || k === "escape") { e.preventDefault(); fastLine(); return; }
-  }
-  if (state === "prompt") {
-    if (k === "enter") { e.preventDefault(); submitAnswer(); return; }      // 回车才确认，像真终端
-    if (k === "backspace") { e.preventDefault(); backspace(); return; }
-    if (e.key.length === 1 && /[a-z]/.test(k) && !answer) { e.preventDefault(); typeChar(e.key); return; }   // 只收一个字母（y 或 n）
-    if (e.key.length === 1) { e.preventDefault(); return; }                 // 其它可见字符忽略
-  }
-  if (k === "r") reset();
-});
 addEventListener("pointerdown", e => {
   if (e.target.closest("button, a, input, form")) return;
   if (state === "go") skipIntro();                 // 拉远途中：点一下就跳过
