@@ -231,13 +231,8 @@
   .signal input:focus, .signal textarea:focus { outline: none; }
   .signal .compose { position: relative; }
   .signal textarea { resize: vertical; min-height: 100px; max-height: 45vh; padding-right: 64px; }
-  .signal .contact-details { margin-top: 20px; color: var(--dim); font-size: 14px; line-height: 1.8; }
-  .signal .contact-details summary { cursor: pointer; width: fit-content; }
-  .signal .contact-details input { font-size: 16px; border-bottom: 1px solid rgba(232,230,223,.14); margin-top: 8px; }
   .signal .send:disabled { cursor: wait; opacity: .6; }
   .signal .out[data-error="true"] { color: #deb0a3; }
-  .signal .privacy-note { margin-top: 16px; font-size: 14px; color: var(--dim); line-height: 1.8; }
-  .signal .trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .signal .rule { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(232,230,223,0.14); overflow: hidden; }
   .signal .rule::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(232,230,223,0), var(--bone) 50%, rgba(232,230,223,0));
                          transform: scaleX(0); transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
@@ -384,14 +379,7 @@
           <textarea id="sigIn" name="message" maxlength="4000" rows="2" required placeholder="比如：你好，我也在看这片星空"></textarea>
           <button class="send" type="submit">发送</button><i class="rule" aria-hidden="true"></i>
         </div>
-        <details class="contact-details">
-          <summary>留下联系方式（选填）</summary>
-          <label class="sr" for="sigContact">邮箱或其他联系方式</label>
-          <input id="sigContact" name="contact" maxlength="200" autocomplete="email" placeholder="邮箱或其他联系方式，方便我回复你">
-        </details>
-        <div class="trap" aria-hidden="true"><label for="sigWebsite">Website</label><input id="sigWebsite" name="website" tabindex="-1" autocomplete="off"></div>
       </form>
-      <p class="privacy-note">留言只会进入我的私人收件箱，不会公开展示。</p>
       <p class="out" id="sigOut" aria-live="polite"></p>
     </div>
     <nav class="links" aria-label="其他联系方式">
