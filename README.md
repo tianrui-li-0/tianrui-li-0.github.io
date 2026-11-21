@@ -33,4 +33,4 @@ Set-Location tests
 npx --yes wrangler@4.166.0 pages dev --port 8788 --binding ADMIN_SECRET=local-preview-only-not-production
 ```
 
-The test configuration and local D1 data are separate from production. Browser autoplay rules may delay the opening's keyboard audio until the first click or keypress; sounds are not queued while blocked. There is no background music.
+The test configuration and local D1 data are separate from production. Browser autoplay rules may delay the opening's keyboard audio until the first click or tap; sounds are not queued while blocked. There is no background music. Custom keyboard shortcuts have been removed; opening controls use clicks or taps, and native button and input behavior is preserved.
